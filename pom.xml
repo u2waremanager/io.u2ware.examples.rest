@@ -5,13 +5,14 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.7</version>
+		<!-- <version>3.5.7</version> -->
+		<version>3.4.11</version>
 
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>io.u2ware</groupId>
 	<artifactId>u2ware-common-usage</artifactId>
-	<version>3.5.7</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>u2ware-common-usage</name>
 	<description>u2ware-common-usage</description>
 	<url/>
