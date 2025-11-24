@@ -8,11 +8,13 @@ import backend.domain.properties.AttributesSet;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
+@Table(name = "usage_users")
 @Data @EqualsAndHashCode(callSuper = true)
 public class User extends AuditedEntity {
 

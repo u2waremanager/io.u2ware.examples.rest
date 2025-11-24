@@ -3,7 +3,14 @@ package backend;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Type;
+
+import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy;
+import org.hibernate.boot.model.naming.Identifier;
+import org.hibernate.boot.model.naming.PhysicalNamingStrategy;
+import org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl;
+import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -19,7 +26,7 @@ import io.u2ware.common.data.jpa.config.EnableRestfulJpaRepositories;
 @EnableJpaAuditing
 @EnableJpaRepositories
 @EnableRestfulJpaRepositories
-public class ApplicationRestConfig implements RepositoryRestConfigurer {
+public class ApplicationRestConfig implements RepositoryRestConfigurer  {
 
     @Autowired
     private EntityManager entityManager;
@@ -40,4 +47,6 @@ public class ApplicationRestConfig implements RepositoryRestConfigurer {
         config.setReturnBodyOnUpdate(true);
         config.setBasePath("/api");
     }
+
+
 }
