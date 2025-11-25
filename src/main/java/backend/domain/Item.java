@@ -13,7 +13,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
-@Table(name = "usage_items")
+@Table(name = "examples_items")
 @Data @EqualsAndHashCode(callSuper = true)
 public class Item extends AuditedEntity{
     

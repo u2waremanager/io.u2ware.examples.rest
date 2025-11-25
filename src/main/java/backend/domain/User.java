@@ -14,7 +14,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
-@Table(name = "usage_users")
+@Table(name = "examples_users")
 @Data @EqualsAndHashCode(callSuper = true)
 public class User extends AuditedEntity {
 
