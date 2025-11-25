@@ -50,6 +50,15 @@ export default {
       set: (val) => {
         $store.commit("contents/root", { subtitle: val });
       },      
+    },
+
+    currentUser : {
+      get: () => {
+        return $store.getters["contents/root"].currentUser;
+      },
+      set: (val) => {
+        $store.commit("contents/root", { currentUser: val });
+      },      
     }
   }
 };

@@ -5,6 +5,11 @@ export default {
   install: (app, options) => {
     const _rules = {
       requried: (value) => {
+
+        if(Array.isArray(value)){ 
+          if (value.length > 0) return true;
+          return $t("$rules.required");
+        }
         if (value) return true;
         return $t("$rules.required");
       },

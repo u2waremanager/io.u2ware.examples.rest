@@ -26,7 +26,6 @@ public class UserHandler {
 
     @HandleBeforeCreate
     public void HandleBeforeCreate(User e) throws Exception{
-        // logger.info("@HandleBeforeCreate : "+e);
         throw ResponseStatusExceptions.NOT_FOUND;
     }
 
@@ -59,8 +58,6 @@ public class UserHandler {
 
     @HandleBeforeRead
     public void HandleBeforeRead(User e, Specification<User> r)throws Exception{
-        // logger.info("@HandleBeforeRead : "+e);
-        // logger.info("@HandleBeforeRead : "+r);
 
         if(AuditedAuditor.hasNotPermission("ROLE_ADMIN")) {
             throw ResponseStatusExceptions.UNAUTHORIZED;

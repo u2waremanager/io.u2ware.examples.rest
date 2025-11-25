@@ -19,12 +19,11 @@ import lombok.EqualsAndHashCode;
 public class User extends AuditedEntity {
 
     @Id
-    // @JsonProperty(access = JsonProperty.Access.READ_ONLY, value = "userId")
     private String userId;
 
-    private String userGroup;
+    private String userName;
 
-    private Long userTimestamp;
+    private String userGroup;
 
     private AttributesSet roles = new AttributesSet();
 

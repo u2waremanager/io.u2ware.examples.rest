@@ -16,14 +16,6 @@ public class AuditedAuditor implements AuditorAware<Audited> {
 
     @Override
     public Optional<Audited> getCurrentAuditor() {
-
-        logger.info("getCurrentAuditor");
-        logger.info("getCurrentAuditor");
-        logger.info("getCurrentAuditor");
-        logger.info("getCurrentAuditor");
-        logger.info("getCurrentAuditor");
-
-
         Audited entity = new Audited();
         entity.setUsername(AuditedAuditor.getCurrentUsername());
         entity.setTimestamp(AuditedAuditor.getCurrentTimestamp());

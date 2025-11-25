@@ -47,6 +47,9 @@
         },
         "bars" : {
             "title" : "Bars"
+        },
+        "users" : {
+            "title" : "Users"
         }
 
     },

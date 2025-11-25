@@ -1,6 +1,8 @@
 import $common from "@/assets/apis/common.js";
 
 import $accountsState from "@/assets/stores/accounts.js";
+import $contentsState from "@/assets/stores/contents.js";
+import { th } from "vuetify/locale";
 
 const name = "[/assets/apis/contents.js]";
 
@@ -70,14 +72,14 @@ const $contents = {
 		},
 		read(data){
 			return $contents.api.execute((uri)=> ({
-				url: `${data._links.self.href}`,
+				url: (typeof data === 'string') ? `${uri}/api/users/${data}` : `${data._links.self.href}`,
         headers: $contents.api.headers(),
 				method : 'GET',
 			}));
 		},
 		update(data){
 			return $contents.api.execute((uri)=> ({
-				url: `${data._links.self.href}`,
+				url: (typeof data === 'string') ? `${uri}/api/users/${data}` : `${data._links.self.href}`,
         headers: $contents.api.headers(),
 				method : 'PUT',
 				data : data
@@ -85,7 +87,7 @@ const $contents = {
 		},
 		delete(data){
 			return $contents.api.execute((uri)=> ({
-				url: `${data._links.self.href}`,
+				url: (typeof data === 'string') ? `${uri}/api/users/${data}` : `${data._links.self.href}`,
         headers: $contents.api.headers(),
 				method : 'DELETE',
 			}));
@@ -112,14 +114,14 @@ const $contents = {
 		},
 		read(data){
 			return $contents.api.execute((uri)=> ({
-				url: `${data._links.self.href}`,
+				url: (typeof data === 'string') ? `${uri}/api/users/${data}` : `${data._links.self.href}`,
         headers: $contents.api.headers(),
 				method : 'POST',
 			}));
 		},
 		update(data){
 			return $contents.api.execute((uri)=> ({
-				url: `${data._links.self.href}`,
+				url: (typeof data === 'string') ? `${uri}/api/users/${data}` : `${data._links.self.href}`,
         headers: $contents.api.headers(),
 				method : 'PUT',
 				data : data
@@ -127,11 +129,109 @@ const $contents = {
 		},
 		delete(data){
 			return $contents.api.execute((uri)=> ({
-				url: `${data._links.self.href}`,
+				url: (typeof data === 'string') ? `${uri}/api/users/${data}` : `${data._links.self.href}`,
         headers: $contents.api.headers(),
 				method : 'DELETE',
 			}));
 		}    
+  },
+
+  users: {
+
+    search(data, params) {
+      return $contents.api.execute((uri) => ({
+        url: `${uri}/api/users/search`,
+        headers: $contents.api.headers(),
+        method: "POST",
+        data: data,
+        params: $common.api.pageable(params),
+      }));
+    },
+		create(data){
+			return $contents.api.execute((uri)=> ({
+				url: `${uri}/api/users`,
+        headers: $contents.api.headers(),
+				method : 'POST',
+				data: data,
+			}));
+		},
+		read(data){
+			return $contents.api.execute((uri)=> ({
+				url: (typeof data === 'string') ? `${uri}/api/users/${data}` : `${data._links.self.href}`,
+        headers: $contents.api.headers(),
+				method : 'POST',
+			}));
+		},
+		update(data){
+			return $contents.api.execute((uri)=> ({
+				url: (typeof data === 'string') ? `${uri}/api/users/${data}` : `${data._links.self.href}`,
+        headers: $contents.api.headers(),
+				method : 'PUT',
+				data : data
+			}));
+		},
+		delete(data){
+			return $contents.api.execute((uri)=> ({
+				url: (typeof data === 'string') ? `${uri}/api/users/${data}` : `${data._links.self.href}`,
+        headers: $contents.api.headers(),
+				method : 'DELETE',
+			}));
+		}    
+  },
+
+
+  auditors: {
+
+    currentUser(){
+      let currentUser = $contentsState.computed.currentUser.get();
+      if(currentUser){
+        return Promise.resolve(currentUser);
+      }else{
+        let oauth2 = $accountsState.computed.oauth2.get();
+        if(! oauth2) return Promise.reject(false);
+
+        return $contents.users.read(oauth2.username).then(r=>{
+          $contentsState.computed.currentUser.set(r);
+          return r;
+        });
+      }
+    },
+
+    hasPermission(roles){
+      return $contents.auditors.currentUser()
+        .then(user=>{
+          let hasRole = false;
+          for(let role of roles){
+            if(user.roles.includes(role)){
+              hasRole = true;
+              break;
+            }
+          }      
+          if(hasRole){
+            return user;
+          }
+          throw user;
+        });  
+    },
+
+    hasNotPermission(roles){
+      return $contents.auditors.currentUser()
+        .then(user=>{
+          let hasRole = false;
+          for(let role of roles){
+            if(user.roles.includes(role)){
+              hasRole = true;
+              break;
+            }
+          }          
+          if(! hasRole){
+            return user;
+          }
+          throw user;
+        });  
+    },
+
   }
+
 };
 export default $contents;
