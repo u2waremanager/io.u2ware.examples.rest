@@ -11,3 +11,5 @@ ENV PORT="8080"
 EXPOSE ${PORT}
 
 ENTRYPOINT ["java","-jar", "/app.jar"]
+
+LABEL org.opencontainers.image.source=https://github.com/u2waremanager/io.u2ware.common.examples

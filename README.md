@@ -10,11 +10,11 @@
 environment
 
 ```bash
-git clone https://github.com/u2waremanager/io.u2ware.common.usage.git
+git clone https://github.com/u2waremanager/io.u2ware.common.examples.git
 ```
 
 ```bash
-cd io.u2ware.common.usage
+cd io.u2ware.common.examples
 ```
 
 ```bash
@@ -26,12 +26,12 @@ http://localhost:8080
 ```
 
 
-# Develop Envirement 
+# Development Environment
 
 ### 1. Frontend
 
 ```bash
-cd io.u2ware.common.usage/src/test/resources/frontend
+cd io.u2ware.common.examples/src/test/resources/frontend
 ```
 ```bash
 npm install
@@ -43,19 +43,20 @@ npm run dev
 ### 2. Backend
 
 ```bash
-cd io.u2ware.common.usage
+cd io.u2ware.common.examples
 ```
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-# Packaging Envirement
+
+# Distribution Environment
 
 
 ### 1. Frontend
 ```bash
-cd io.u2ware.common.usage/src/test/resources/frontend
+cd io.u2ware.common.examples/src/test/resources/frontend
 ```
 ```bash
 npm run build
@@ -64,24 +65,19 @@ npm run build
 ## 2. Backend
 
 ```bash
-cd io.u2ware.common.usage
+cd io.u2ware.common.examples
 ```
 
 ```bash
 ./mvnw clean install
 ```
 
-
-# Deploy 
+## 3. Deploy
 
 ```bash
-docker-compose up --remove-orphans 
+docker build -t ghcr.io/u2waremanager/examples:0.0.1-SNAPSHOT .
 ```
 
-
-docker push ghcr.io/u2ware-company/io.u2ware.product.files:${project.version}
-
-
-
-
-
+```bash
+docker push -t ghcr.io/u2waremanager/examples:0.0.1-SNAPSHOT
+```

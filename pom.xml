@@ -11,10 +11,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>io.u2ware</groupId>
-	<artifactId>u2ware-common-usage</artifactId>
+	<artifactId>common.examples</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>u2ware-common-usage</name>
-	<description>u2ware-common-usage</description>
+	<name>u2ware-common-examples</name>
+	<description>u2ware-common-examples</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -76,7 +76,7 @@
 
 		<dependency>
 			<groupId>io.u2ware</groupId>
-			<artifactId>common-data</artifactId>
+			<artifactId>common.data</artifactId>
 			<version>${u2ware.version}</version>
 		</dependency>
 
@@ -91,7 +91,7 @@
 
 		<dependency>
 			<groupId>io.u2ware</groupId>
-			<artifactId>common-oauth2</artifactId>
+			<artifactId>common.oauth2</artifactId>
 			<version>${u2ware.version}</version>
 		</dependency>
 
@@ -122,7 +122,7 @@
 
 		<dependency>
 			<groupId>io.u2ware</groupId>
-			<artifactId>common-docs</artifactId>
+			<artifactId>common.docs</artifactId>
 			<version>${u2ware.version}</version>
 			<scope>test</scope>
 		</dependency>
