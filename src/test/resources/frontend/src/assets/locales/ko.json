@@ -53,8 +53,10 @@
         },
         "users" : {
             "title" : "Users"
+        },
+        "tokens" : {
+            "title" : "Token"
         }
-
     },
 
 

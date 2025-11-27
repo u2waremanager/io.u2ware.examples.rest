@@ -115,8 +115,8 @@
                 class="ma-2"
                 v-model="editForm.title"
                 :rules="[$rules.requried]"
-                label="Name"
-                placeholder="name"
+                label="title"
+                placeholder="title"
                 hint="......."
                 variant="outlined"
               ></v-text-field>
@@ -125,8 +125,8 @@
                 class="ma-2"
                 v-model="editForm.size"
                 :rules="[$rules.number]"
-                label="Age"
-                placeholder="age"
+                label="size"
+                placeholder="size"
                 hint="......."
                 variant="outlined"
               ></v-text-field>

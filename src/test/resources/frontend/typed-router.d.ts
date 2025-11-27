@@ -25,11 +25,12 @@ declare module 'vue-router/auto-routes' {
     '/accounts/logoff': RouteRecordInfo<'/accounts/logoff', '/accounts/logoff', Record<never, never>, Record<never, never>>,
     '/accounts/logon': RouteRecordInfo<'/accounts/logon', '/accounts/logon', Record<never, never>, Record<never, never>>,
     '/accounts/logout': RouteRecordInfo<'/accounts/logout', '/accounts/logout', Record<never, never>, Record<never, never>>,
-    '/contents': RouteRecordInfo<'/contents', '/contents', Record<never, never>, Record<never, never>, '/contents/' | '/contents/bars' | '/contents/foos' | '/contents/items' | '/contents/users'>,
+    '/contents': RouteRecordInfo<'/contents', '/contents', Record<never, never>, Record<never, never>, '/contents/' | '/contents/bars' | '/contents/foos' | '/contents/items' | '/contents/tokens' | '/contents/users'>,
     '/contents/': RouteRecordInfo<'/contents/', '/contents', Record<never, never>, Record<never, never>>,
     '/contents/bars': RouteRecordInfo<'/contents/bars', '/contents/bars', Record<never, never>, Record<never, never>>,
     '/contents/foos': RouteRecordInfo<'/contents/foos', '/contents/foos', Record<never, never>, Record<never, never>>,
     '/contents/items': RouteRecordInfo<'/contents/items', '/contents/items', Record<never, never>, Record<never, never>>,
+    '/contents/tokens': RouteRecordInfo<'/contents/tokens', '/contents/tokens', Record<never, never>, Record<never, never>>,
     '/contents/users': RouteRecordInfo<'/contents/users', '/contents/users', Record<never, never>, Record<never, never>>,
     '/examples': RouteRecordInfo<'/examples', '/examples', Record<never, never>, Record<never, never>, '/examples/' | '/examples/plugins' | '/examples/plugins/dialog' | '/examples/plugins/locales' | '/examples/plugins/moment' | '/examples/plugins/storeGet' | '/examples/plugins/storeSet' | '/examples/wireframes' | '/examples/wireframes/baseline' | '/examples/wireframes/constrained' | '/examples/wireframes/discord' | '/examples/wireframes/extended-toolbar' | '/examples/wireframes/inbox' | '/examples/wireframes/side-navigation' | '/examples/wireframes/steam' | '/examples/wireframes/system-bar' | '/examples/wireframes/three-column'>,
     '/examples/': RouteRecordInfo<'/examples/', '/examples', Record<never, never>, Record<never, never>>,
@@ -91,7 +92,7 @@ declare module 'vue-router/auto-routes' {
       views: never
     }
     'src/pages/contents.vue': {
-      routes: '/contents' | '/contents/' | '/contents/bars' | '/contents/foos' | '/contents/items' | '/contents/users'
+      routes: '/contents' | '/contents/' | '/contents/bars' | '/contents/foos' | '/contents/items' | '/contents/tokens' | '/contents/users'
       views: 'default'
     }
     'src/pages/contents/index.vue': {
@@ -108,6 +109,10 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/contents/items.vue': {
       routes: '/contents/items'
+      views: never
+    }
+    'src/pages/contents/tokens.vue': {
+      routes: '/contents/tokens'
       views: never
     }
     'src/pages/contents/users.vue': {

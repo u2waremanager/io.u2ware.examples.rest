@@ -22,6 +22,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.util.StringUtils;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import io.u2ware.common.oauth2.config.EnableAuthorizationEndpoints;
@@ -33,6 +34,15 @@ import io.u2ware.common.oauth2.crypto.JoseEncryptor;
 @EnableMethodSecurity
 @EnableAuthorizationEndpoints
 public class ApplicationSecurityConfig {
+
+
+    // public static enum Roles {
+    //     ROLE_ADMIN,
+    //     ROLE_USER
+    // }
+
+
+
 
     @Autowired
     private CorsConfigurationSource corsConfigurationSource;
@@ -50,11 +60,12 @@ public class ApplicationSecurityConfig {
                     ))
 
             .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers("/oauth2/**").permitAll()
+                    .requestMatchers(HttpMethod.GET,  "/oauth2/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/oauth2/**").hasRole("ADMIN")
+
                     .requestMatchers(HttpMethod.GET, "/api").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/profile/**").permitAll()
-                    // .requestMatchers("/api/foos/**").permitAll()
-                    // .requestMatchers("/api/bars/**").permitAll()
+
                     .requestMatchers("/api/**").authenticated()
                     .anyRequest().permitAll()
             )
@@ -99,6 +110,10 @@ public class ApplicationSecurityConfig {
 
     @Bean
     public JwtDecoder jwtDecoder() throws Exception {
+        if(! StringUtils.hasText(jwkSetUri) || "none".equalsIgnoreCase(jwkSetUri) || "local".equalsIgnoreCase(jwkSetUri))  {
+            return JoseEncryptor.getInstance().decoder();
+        }
+
         try{
             return NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
         }catch(Exception e){

@@ -35,7 +35,6 @@ public class FooTests {
 	protected @Autowired FooDocs fd;
 
 
-	@SuppressWarnings("null")
 	@Test
 	void contextLoads1() throws Exception{
 		

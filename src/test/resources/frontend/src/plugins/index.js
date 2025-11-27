@@ -17,6 +17,7 @@ import jsonViewer from './jsonViewer'
 
 
 import dialog from './dialog'
+import clipboard from './clipboard'
 import rules from './rules'
 
 
@@ -32,5 +33,7 @@ export function registerPlugins (app) {
     .use(jsonViewer)
 
     .use(dialog)
+    .use(clipboard)
+
     .use(rules)
 }

@@ -84,3 +84,14 @@ docker build \
 ```bash
 docker push ghcr.io/u2waremanager/io.u2ware.examples.rest:0.0.1-SNAPSHOT
 ```
+
+
+
+# ToDo
+1. Attributes UI
+2. AttributesSet UI
+3. Link UI
+4. Set<Link> UI
+
+
+

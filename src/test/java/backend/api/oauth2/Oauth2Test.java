@@ -27,7 +27,6 @@ public class Oauth2Test {
     private @Autowired Oauth2Docs od;
     
     
-	@SuppressWarnings("null")
     @Test
 	void contextLoads() throws Exception{
 
@@ -95,6 +94,18 @@ public class Oauth2Test {
         mvc.perform(get("/oauth2/userinfo").auth(od::jose, "bb", "USER"))
             .andExpect(is2xx())
             .andExpect(isJson("$.claims.authorities", Arrays.asList("ROLE_USER")))
+            ;
+
+
+
+        ////////////////////////////////////
+        mvc.perform(post("/oauth2/login").param("provider", "other1").auth(od::jose, "aa", "ADMIN"))
+            .andExpect(is2xx())
+            ;
+
+
+        mvc.perform(post("/oauth2/login").param("provider", "other1").auth(od::jose, "bb"))
+            .andExpect(is4xx())
             ;
 
     }

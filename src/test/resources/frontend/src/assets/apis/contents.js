@@ -6,15 +6,14 @@ import { th } from "vuetify/locale";
 
 const name = "[/assets/apis/contents.js]";
 
-const $contents = {
-
+const $contentsApi = {
   api: {
     host() {
       return $common.api.host("VITE_API_BACKEND");
     },
 
     execute(optionsBuilder) {
-      return $contents.api
+      return $contentsApi.api
         .host()
         .then(optionsBuilder)
         .then((e) => {
@@ -54,246 +53,291 @@ const $contents = {
   },
 
   auditors: {
-
-    currentUser(){
+    currentUser() {
       let currentUser = $contentsState.computed.currentUser.get();
-      if(currentUser){
+      if (currentUser) {
         return Promise.resolve(currentUser);
-      }else{
+      } else {
         let oauth2 = $accountsState.computed.oauth2.get();
-        if(! oauth2) return Promise.reject(false);
+        if (!oauth2) return Promise.reject(false);
 
-        return $contents.users.read(oauth2.username).then(r=>{
+        return $contentsApi.users.read(oauth2.username).then((r) => {
           $contentsState.computed.currentUser.set(r);
           return r;
         });
       }
     },
 
-    hasPermission(roles){
-      return $contents.auditors.currentUser()
-        .then(user=>{
-          let hasRole = false;
-          for(let role of roles){
-            if(user.roles.includes(role)){
-              hasRole = true;
-              break;
-            }
-          }      
-          if(hasRole){
-            return user;
+    hasPermission(roles) {
+      return $contentsApi.auditors.currentUser().then((user) => {
+        let hasRole = false;
+        for (let role of roles) {
+          if (user.roles.includes(role)) {
+            hasRole = true;
+            break;
           }
-          throw user;
-        });  
+        }
+        if (hasRole) {
+          return user;
+        }
+        throw user;
+      });
     },
 
-    hasNotPermission(roles){
-      return $contents.auditors.currentUser()
-        .then(user=>{
-          let hasRole = false;
-          for(let role of roles){
-            if(user.roles.includes(role)){
-              hasRole = true;
-              break;
-            }
-          }          
-          if(! hasRole){
-            return user;
+    hasNotPermission(roles) {
+      return $contentsApi.auditors.currentUser().then((user) => {
+        let hasRole = false;
+        for (let role of roles) {
+          if (user.roles.includes(role)) {
+            hasRole = true;
+            break;
           }
-          throw user;
-        });  
+        }
+        if (!hasRole) {
+          return user;
+        }
+        throw user;
+      });
     },
   },
 
-
   foos: {
     search(data, params) {
-      return $contents.api.execute((uri) => ({
-        url: `${uri}/api/foos`,
-        headers: $contents.api.headers(),
-        method: "GET",
-        data: data,
-        params: $common.api.pageable(params),
-      }))
-      .then((r)=>{
-        r.entitiesTotal = r.page.totalElements;
-        r.entities = r._embedded.foos;
-        return r;
-      });
+      return $contentsApi.api
+        .execute((uri) => ({
+          url: `${uri}/api/foos`,
+          headers: $contentsApi.api.headers(),
+          method: "GET",
+          data: data,
+          params: $common.api.pageable(params),
+        }))
+        .then((r) => {
+          r.entitiesTotal = r.page.totalElements;
+          r.entities = r._embedded.foos;
+          return r;
+        });
     },
-		create(data){
-			return $contents.api.execute((uri)=> ({
-				url: `${uri}/api/foos`,
-        headers: $contents.api.headers(),
-				method : 'POST',
-				data: data,
-			}));
-		},
-		read(data){
-			return $contents.api.execute((uri)=> ({
-				url: (typeof data === 'string') ? `${uri}/api/users/${data}` : `${data._links.self.href}`,
-        headers: $contents.api.headers(),
-				method : 'GET',
-			}));
-		},
-		update(data){
-			return $contents.api.execute((uri)=> ({
-				url: (typeof data === 'string') ? `${uri}/api/users/${data}` : `${data._links.self.href}`,
-        headers: $contents.api.headers(),
-				method : 'PUT',
-				data : data
-			}));
-		},
-		delete(data){
-			return $contents.api.execute((uri)=> ({
-				url: (typeof data === 'string') ? `${uri}/api/users/${data}` : `${data._links.self.href}`,
-        headers: $contents.api.headers(),
-				method : 'DELETE',
-			}));
-		}
+    create(data) {
+      return $contentsApi.api.execute((uri) => ({
+        url: `${uri}/api/foos`,
+        headers: $contentsApi.api.headers(),
+        method: "POST",
+        data: data,
+      }));
+    },
+    read(data) {
+      return $contentsApi.api.execute((uri) => ({
+        url:
+          typeof data === "string"
+            ? `${uri}/api/users/${data}`
+            : `${data._links.self.href}`,
+        headers: $contentsApi.api.headers(),
+        method: "GET",
+      }));
+    },
+    update(data) {
+      return $contentsApi.api.execute((uri) => ({
+        url:
+          typeof data === "string"
+            ? `${uri}/api/users/${data}`
+            : `${data._links.self.href}`,
+        headers: $contentsApi.api.headers(),
+        method: "PUT",
+        data: data,
+      }));
+    },
+    delete(data) {
+      return $contentsApi.api.execute((uri) => ({
+        url:
+          typeof data === "string"
+            ? `${uri}/api/users/${data}`
+            : `${data._links.self.href}`,
+        headers: $contentsApi.api.headers(),
+        method: "DELETE",
+      }));
+    },
   },
 
   bars: {
     search(data, params) {
-      return $contents.api.execute((uri) => ({
-        url: `${uri}/api/bars/search`,
-        headers: $contents.api.headers(),
+      return $contentsApi.api
+        .execute((uri) => ({
+          url: `${uri}/api/bars/search`,
+          headers: $contentsApi.api.headers(),
+          method: "POST",
+          data: data,
+          params: $common.api.pageable(params),
+        }))
+        .then((r) => {
+          r.entitiesTotal = r.page.totalElements;
+          r.entities = r._embedded.bars;
+          return r;
+        });
+    },
+    create(data) {
+      return $contentsApi.api.execute((uri) => ({
+        url: `${uri}/api/bars`,
+        headers: $contentsApi.api.headers(),
         method: "POST",
         data: data,
-        params: $common.api.pageable(params),
-      }))
-      .then((r)=>{
-        r.entitiesTotal = r.page.totalElements;
-        r.entities = r._embedded.bars;
-        return r;
-      });
+      }));
     },
-		create(data){
-			return $contents.api.execute((uri)=> ({
-				url: `${uri}/api/bars`,
-        headers: $contents.api.headers(),
-				method : 'POST',
-				data: data,
-			}));
-		},
-		read(data){
-			return $contents.api.execute((uri)=> ({
-				url: (typeof data === 'string') ? `${uri}/api/users/${data}` : `${data._links.self.href}`,
-        headers: $contents.api.headers(),
-				method : 'POST',
-			}));
-		},
-		update(data){
-			return $contents.api.execute((uri)=> ({
-				url: (typeof data === 'string') ? `${uri}/api/users/${data}` : `${data._links.self.href}`,
-        headers: $contents.api.headers(),
-				method : 'PUT',
-				data : data
-			}));
-		},
-		delete(data){
-			return $contents.api.execute((uri)=> ({
-				url: (typeof data === 'string') ? `${uri}/api/users/${data}` : `${data._links.self.href}`,
-        headers: $contents.api.headers(),
-				method : 'DELETE',
-			}));
-		}    
+    read(data) {
+      return $contentsApi.api.execute((uri) => ({
+        url:
+          typeof data === "string"
+            ? `${uri}/api/users/${data}`
+            : `${data._links.self.href}`,
+        headers: $contentsApi.api.headers(),
+        method: "POST",
+      }));
+    },
+    update(data) {
+      return $contentsApi.api.execute((uri) => ({
+        url:
+          typeof data === "string"
+            ? `${uri}/api/users/${data}`
+            : `${data._links.self.href}`,
+        headers: $contentsApi.api.headers(),
+        method: "PUT",
+        data: data,
+      }));
+    },
+    delete(data) {
+      return $contentsApi.api.execute((uri) => ({
+        url:
+          typeof data === "string"
+            ? `${uri}/api/users/${data}`
+            : `${data._links.self.href}`,
+        headers: $contentsApi.api.headers(),
+        method: "DELETE",
+      }));
+    },
   },
 
   users: {
     search(data, params) {
-      return $contents.api.execute((uri) => ({
-        url: `${uri}/api/users/search`,
-        headers: $contents.api.headers(),
+      return $contentsApi.api
+        .execute((uri) => ({
+          url: `${uri}/api/users/search`,
+          headers: $contentsApi.api.headers(),
+          method: "POST",
+          data: data,
+          params: $common.api.pageable(params),
+        }))
+        .then((r) => {
+          r.entitiesTotal = r.page.totalElements;
+          r.entities = r._embedded.users;
+          return r;
+        });
+    },
+    create(data) {
+      return $contentsApi.api.execute((uri) => ({
+        url: `${uri}/api/users`,
+        headers: $contentsApi.api.headers(),
         method: "POST",
         data: data,
-        params: $common.api.pageable(params),
-      }))
-      .then((r)=>{
-        r.entitiesTotal = r.page.totalElements;
-        r.entities = r._embedded.users;
-        return r;
-      });
+      }));
     },
-		create(data){
-			return $contents.api.execute((uri)=> ({
-				url: `${uri}/api/users`,
-        headers: $contents.api.headers(),
-				method : 'POST',
-				data: data,
-			}));
-		},
-		read(data){
-			return $contents.api.execute((uri)=> ({
-				url: (typeof data === 'string') ? `${uri}/api/users/${data}` : `${data._links.self.href}`,
-        headers: $contents.api.headers(),
-				method : 'POST',
-			}));
-		},
-		update(data){
-			return $contents.api.execute((uri)=> ({
-				url: (typeof data === 'string') ? `${uri}/api/users/${data}` : `${data._links.self.href}`,
-        headers: $contents.api.headers(),
-				method : 'PUT',
-				data : data
-			}));
-		},
-		delete(data){
-			return $contents.api.execute((uri)=> ({
-				url: (typeof data === 'string') ? `${uri}/api/users/${data}` : `${data._links.self.href}`,
-        headers: $contents.api.headers(),
-				method : 'DELETE',
-			}));
-		}    
+    read(data) {
+      return $contentsApi.api.execute((uri) => ({
+        url:
+          typeof data === "string"
+            ? `${uri}/api/users/${data}`
+            : `${data._links.self.href}`,
+        headers: $contentsApi.api.headers(),
+        method: "POST",
+      }));
+    },
+    update(data) {
+      return $contentsApi.api.execute((uri) => ({
+        url:
+          typeof data === "string"
+            ? `${uri}/api/users/${data}`
+            : `${data._links.self.href}`,
+        headers: $contentsApi.api.headers(),
+        method: "PUT",
+        data: data,
+      }));
+    },
+    delete(data) {
+      return $contentsApi.api.execute((uri) => ({
+        url:
+          typeof data === "string"
+            ? `${uri}/api/users/${data}`
+            : `${data._links.self.href}`,
+        headers: $contentsApi.api.headers(),
+        method: "DELETE",
+      }));
+    },
   },
 
   items: {
     search(data, params) {
-      return $contents.api.execute((uri) => ({
-        url: `${uri}/api/items/search`,
-        headers: $contents.api.headers(),
+      return $contentsApi.api
+        .execute((uri) => ({
+          url: `${uri}/api/items/search`,
+          headers: $contentsApi.api.headers(),
+          method: "POST",
+          data: data,
+          params: $common.api.pageable(params),
+        }))
+        .then((r) => {
+          r.entitiesTotal = r.page.totalElements;
+          r.entities = r._embedded.items;
+          return r;
+        });
+    },
+    create(data) {
+      return $contentsApi.api.execute((uri) => ({
+        url: `${uri}/api/items`,
+        headers: $contentsApi.api.headers(),
         method: "POST",
         data: data,
-        params: $common.api.pageable(params),
-      }))
-      .then((r)=>{
-        r.entitiesTotal = r.page.totalElements;
-        r.entities = r._embedded.items;
-        return r;
-      });
+      }));
     },
-		create(data){
-			return $contents.api.execute((uri)=> ({
-				url: `${uri}/api/items`,
-        headers: $contents.api.headers(),
-				method : 'POST',
-				data: data,
-			}));
-		},
-		read(data){
-			return $contents.api.execute((uri)=> ({
-				url: (typeof data === 'string') ? `${uri}/api/items/${data}` : `${data._links.self.href}`,
-        headers: $contents.api.headers(),
-				method : 'POST',
-			}));
-		},
-		update(data){
-			return $contents.api.execute((uri)=> ({
-				url: (typeof data === 'string') ? `${uri}/api/items/${data}` : `${data._links.self.href}`,
-        headers: $contents.api.headers(),
-				method : 'PUT',
-				data : data
-			}));
-		},
-		delete(data){
-			return $contents.api.execute((uri)=> ({
-				url: (typeof data === 'string') ? `${uri}/api/items/${data}` : `${data._links.self.href}`,
-        headers: $contents.api.headers(),
-				method : 'DELETE',
-			}));
-		}    
+    read(data) {
+      return $contentsApi.api.execute((uri) => ({
+        url:
+          typeof data === "string"
+            ? `${uri}/api/items/${data}`
+            : `${data._links.self.href}`,
+        headers: $contentsApi.api.headers(),
+        method: "POST",
+      }));
+    },
+    update(data) {
+      return $contentsApi.api.execute((uri) => ({
+        url:
+          typeof data === "string"
+            ? `${uri}/api/items/${data}`
+            : `${data._links.self.href}`,
+        headers: $contentsApi.api.headers(),
+        method: "PUT",
+        data: data,
+      }));
+    },
+    delete(data) {
+      return $contentsApi.api.execute((uri) => ({
+        url:
+          typeof data === "string"
+            ? `${uri}/api/items/${data}`
+            : `${data._links.self.href}`,
+        headers: $contentsApi.api.headers(),
+        method: "DELETE",
+      }));
+    },
   },
 
-
+  tokens: {
+    create(provider) {
+      return $contentsApi.api.execute((uri) => ({
+        url: `${uri}/oauth2/login`,
+        headers: $contentsApi.api.headers(),
+        method: "POST",
+        params: { provider: provider },
+      }));
+    },
+  },
 };
-export default $contents;
+export default $contentsApi;

@@ -22,3 +22,4 @@ npm install uuid --save
 
 npm install moment --save
 
+npm install --save vue-clipboard3

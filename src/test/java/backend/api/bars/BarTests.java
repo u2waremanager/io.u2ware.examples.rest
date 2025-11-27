@@ -35,7 +35,7 @@ public class BarTests {
 	@Autowired
 	protected BarRepository barRepository;
 
-	@Test @SuppressWarnings("null")
+	@Test 
 	void contextLoads1() throws Exception{
 
 
