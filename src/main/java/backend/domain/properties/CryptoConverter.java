@@ -14,8 +14,8 @@ import io.u2ware.common.oauth2.crypto.CryptoKeyStore;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
-@Converter(autoApply = true)
-public class CryptoConverter implements AttributeConverter<Crypto, String> {
+// @Converter(autoApply = true)
+public class CryptoConverter implements AttributeConverter<String, String> {
 
     private SecretKey secretKey;
 
@@ -23,10 +23,10 @@ public class CryptoConverter implements AttributeConverter<Crypto, String> {
         if(secretKey != null) return secretKey;
         try{
             String name = ClassUtils.getShortName(getClass());
-            String password = getClass().getName();
-    		Resource resource = new ClassPathResource(name, getClass());
-            Path keyPath = Paths.get(resource.getURI());
-            this.secretKey = CryptoKeyStore.load(keyPath, null, password);
+            Resource resource = new ClassPathResource(name, getClass());
+            Path path = Paths.get(resource.getURI());
+            this.secretKey = CryptoKeyStore.load(path, "AES");
+            
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -35,20 +35,22 @@ public class CryptoConverter implements AttributeConverter<Crypto, String> {
 
 
     @Override
-    public String convertToDatabaseColumn(Crypto attribute) {
+    public String convertToDatabaseColumn(String attribute) {
         try{
             return CryptoEncryptor.encrypt(attribute.toString(), secretKey());
         }catch(Exception e){
-            return "";
+            e.printStackTrace();
+            return null;
         }
     }
 
     @Override
-    public Crypto convertToEntityAttribute(String dbData) {
+    public String convertToEntityAttribute(String dbData) {
         try{
-            return new Crypto(CryptoEncryptor.decrypt(dbData, secretKey()));
+            return CryptoEncryptor.decrypt(dbData, secretKey());
         }catch(Exception e){
-            return new Crypto();
+            e.printStackTrace();
+            return null;//new Crypto();
         }
     }
 

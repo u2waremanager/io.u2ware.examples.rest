@@ -1,11 +1,16 @@
 package backend.api.items;
 
-import static io.u2ware.common.docs.MockMvcRestDocs.*;
+import static io.u2ware.common.docs.MockMvcRestDocs.delete;
+import static io.u2ware.common.docs.MockMvcRestDocs.is2xx;
+import static io.u2ware.common.docs.MockMvcRestDocs.post;
+import static io.u2ware.common.docs.MockMvcRestDocs.print;
+import static io.u2ware.common.docs.MockMvcRestDocs.put;
+import static io.u2ware.common.docs.MockMvcRestDocs.result;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,14 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.web.servlet.MockMvc;
 
+import backend.api.bars.BarDocs;
 import backend.api.foos.FooDocs;
 import backend.api.oauth2.Oauth2Docs;
-import backend.domain.User;
-import io.u2ware.common.data.jpa.repository.query.JpaSpecificationBuilder;
+import backend.domain.Item.Child;
 
 
 @SpringBootTest
@@ -35,85 +39,126 @@ public class ItemTest {
     
 	protected @Autowired Oauth2Docs od;	
 	protected @Autowired FooDocs fd;
+	protected @Autowired BarDocs bd;
 
-	protected @Autowired ItemDocs id;
+	protected @Autowired ItemDocs d;
 
-
+ 
     @Test
     public void contextLoads() throws Exception{
-
 
         Jwt u = od.jose("itemTestUser1");
 
         //////////////////////////////
-        // 
+        // Ready
         //////////////////////////////
    		mvc.perform(post("/api/foos").auth(u).content(fd::newEntity, "foo1"))
-            .andDo(result(fd::context, "foo1"))
+            .andDo(result(fd::context, "itemFoo1"))
             .andExpect(is2xx());
-        Map<String,Object> fooBody1 = fd.context("foo1", "$");
-        String fooLink1 = fd.context("foo1", "$._links.self.href");
+        Map<String,Object> fooBody1 = fd.context("itemFoo1", "$");
+        String fooLink1 = fd.context("itemFoo1", "$._links.self.href");
 
 
    		mvc.perform(post("/api/foos").auth(u).content(fd::newEntity, "foo2"))
-            .andDo(result(fd::context, "foo2"))
+            .andDo(result(fd::context, "itemFoo2"))
             .andExpect(is2xx());
-        Map<String,Object> fooBody2 = fd.context("foo2", "$");
-        String fooLink2 = fd.context("foo2", "$._links.self.href");
+        Map<String,Object> fooBody2 = fd.context("itemFoo2", "$");
+        String fooLink2 = fd.context("itemFoo2", "$._links.self.href");
+
+
+   		mvc.perform(post("/api/bars").auth(u).content(bd::newEntity))
+            .andDo(result(fd::context, "itemBar1"))
+            .andExpect(is2xx());
+        Map<String,Object> barBody1 = fd.context("itemBar1", "$");
+        String barLink1 = fd.context("itemBar1", "$._links.self.href");
+
+
+   		mvc.perform(post("/api/bars").auth(u).content(bd::newEntity))
+            .andDo(result(fd::context, "itemBar2"))
+            .andExpect(is2xx());
+        Map<String,Object> barBody2 = fd.context("itemBar2", "$");
+        String barLink2 = fd.context("itemBar2", "$._links.self.href");
+
+
+   		mvc.perform(post("/api/bars").auth(u).content(bd::newEntity))
+            .andDo(result(fd::context, "itemBar3"))
+            .andExpect(is2xx());
+        Map<String,Object> barBody3 = fd.context("itemBar3", "$");
+        String barLink3 = fd.context("itemBar3", "$._links.self.href");
 
 
         logger.info("fooBody1: "+fooBody1);
         logger.info("fooLink1: "+fooLink1);
         logger.info("fooBody2: "+fooBody2);
         logger.info("fooLink2: "+fooLink2);
+        logger.info("barBody1: "+barBody1);
+        logger.info("barLink1: "+barLink1);
+        logger.info("barBody2: "+barBody2);
+        logger.info("barLink2: "+barLink2);
+        logger.info("barBody3: "+barBody3);
+        logger.info("barLink3: "+barLink3);
+
+
+        Child c1 = new Child("c1",1);
+        Child c2 = new Child("c2",2);
+        Child c3 = new Child("c3",3);
+        Child c4 = new Child("c4",4);
+
+
+        Map<String,Object> jsonValue = new HashMap<>();
+        jsonValue.put("key1", "value1");
+
+
+        Set<Object> arrayValue = new HashSet<>();
+        arrayValue.add("hello");
+        arrayValue.add(jsonValue);
 
 
         //////////////////////////////
         // Create
         //////////////////////////////
-   		mvc.perform(post("/api/items").auth(u).content(id::newEntity, fooLink1))
-            .andDo(result(id::context, "item1"))
+        Map<String,Object> req = new HashMap<>();
+        req.put("title", "item1");
+        req.put("fooLink", fooLink1);
+        req.put("barsLinks", new Object[]{barBody1});
+        req.put("childs", new Object[]{c1, c2});
+        req.put("jsonValue", jsonValue);
+        req.put("arrayValue", arrayValue);
+        req.put("cryptoValue", "helloworld");
+
+        mvc.perform(post("/api/items").auth(u).content(req))
+            .andDo(result(d::context, "item1"))
             .andDo(print())
             .andExpect(is2xx());
-        Map<String,Object> itemBody1 = id.context("item1", "$");
-        String itemLink1 = id.context("item1", "$._links.self.href");
-        logger.info(itemBody1);
-        logger.info(itemLink1);
+        String link1 = d.context("item1", "$._links.self.href");
+        req = d.context("item1", "$");
+        logger.info(req);
+        logger.info(link1);
 
-
-   		mvc.perform(post("/api/items").auth(u).content(id::newEntity, fooBody2))
-            .andDo(result(id::context, "item2"))
-            .andExpect(is2xx());
-        Map<String,Object> itemBody2 = id.context("item2", "$");
-        String itemLink2 = id.context("item2", "$._links.self.href");
-        logger.info(itemBody2);
-        logger.info(itemLink2);
-
-        //////////////////////////////
-        // Read
-        //////////////////////////////
-   		mvc.perform(post(itemLink1).auth(u))
-            .andDo(print())
-            .andExpect(is2xx());
-        
-
-        logger.info("========================================================================");
-        logger.info("========================================================================");
-        logger.info("========================================================================");
-        logger.info("========================================================================");
-
+      
         // //////////////////////////////
         // // Update
+        // //////////////////////////////       
+        // req.put("fooLink", fooBody2);
+        // req.put("barsLinks", new Object[]{barBody2, barLink3});
+        // req.put("childs", new Object[]{c3, c4});
+
+        // mvc.perform(put(link1).auth(u).content(req))
+        //     .andDo(print())
+        //     .andExpect(is2xx());
+
         // //////////////////////////////
-   		mvc.perform(put(itemLink1).auth(u).content(id::updateEntity, itemBody1, fooBody2))
-            .andDo(print())
-            .andExpect(is2xx());
+        // // Read
+        // //////////////////////////////
+   		// mvc.perform(post(link1).auth(u))
+        //     .andDo(print())
+        //     .andExpect(is2xx());
 
-
-
-
-
-
+        // //////////////////////////////
+        // // Delete
+        // //////////////////////////////
+   		// mvc.perform(delete(link1).auth(u))
+        //     .andDo(print())
+        //     .andExpect(is2xx());
     }
-    
 }

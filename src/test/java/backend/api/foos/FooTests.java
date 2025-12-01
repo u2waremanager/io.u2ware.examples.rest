@@ -38,7 +38,7 @@ public class FooTests {
 	@Test
 	void contextLoads1() throws Exception{
 		
-        Jwt u = od.jose("u");
+        Jwt u = od.jose("fooUser");
 
 		mvc.perform(get("/api/profile/foos")).andExpect(is2xx()).andDo(print());
 

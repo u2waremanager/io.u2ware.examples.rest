@@ -12,6 +12,7 @@ import org.springframework.data.rest.core.annotation.HandleBeforeSave;
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.stereotype.Component;
 
+import backend.domain.Bar;
 import backend.domain.Foo;
 import backend.domain.Item;
 import backend.domain.properties.LinkConversion;
@@ -27,30 +28,28 @@ public class ItemHandler {
     private @Autowired LinkConversion linkConversion;
 
 	private void conversion(Item e) throws Exception{
-		logger.info("conversion1 "+e.getTitle());
-		logger.info("conversion1 "+e.getFoo());
 		logger.info("conversion1 "+e.getFooLink());
-		linkConversion.convertWithEntity(Foo.class, e.getFooLink(), ref->{e.setFoo(ref);});		
-		logger.info("conversion2 "+e.getTitle());
-		logger.info("conversion2 "+e.getFoo());
-		logger.info("conversion2 "+e.getFooLink());
+		logger.info("conversion1 "+e.getBarsLinks());
+
+		linkConversion.convertWithEntity(Foo.class, e.getFooLink(), ref->{e.setFoo(ref);});
+        linkConversion.convertWithEntity(Bar.class, e.getBarsLinks(), ref->{e.setBars(ref);});
 	}
 
 
 
     @HandleBeforeCreate
     public void HandleBeforeCreate(Item e) throws Exception{
-        logger.info("@HandleBeforeCreate : "+e);
         conversion(e);
+		logger.info("@HandleBeforeCreate "+e.getFoo());
+		logger.info("@HandleBeforeCreate "+e.getFooLink());
     }
 
 
     @HandleBeforeSave
     public void HandleBeforeSave(Item e)throws Exception{
-        logger.info("@HandleBeforeSave : "+e.getTitle());
+        conversion(e);
 		logger.info("@HandleBeforeSave "+e.getFoo());
 		logger.info("@HandleBeforeSave "+e.getFooLink());
-        conversion(e);
     }
 
     @HandleBeforeDelete

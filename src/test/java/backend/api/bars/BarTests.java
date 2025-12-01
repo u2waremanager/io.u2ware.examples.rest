@@ -39,7 +39,7 @@ public class BarTests {
 	void contextLoads1() throws Exception{
 
 
-        Jwt u = od.jose("u");
+        Jwt u = od.jose("barUser");
 
 
 		mvc.perform(get("/api/profile/bars")).andExpect(is2xx()).andDo(print());
