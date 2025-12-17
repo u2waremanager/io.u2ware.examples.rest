@@ -38,10 +38,16 @@ export default {
   // 
   /////////////////////
 
-  persistedstate: false,
+  persistedstate: true,
 
   computed: {
-
-    
+    oauth2: {
+      get: () => {
+        return $store.getters["common/root"].oauth2;
+      },
+      set: (val) => {
+        $store.commit("common/root", { oauth2: val });
+      },
+    },
   },
 };

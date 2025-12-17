@@ -1,4 +1,4 @@
-package backend.api.users;
+package backend.api.oauth2;
 
 
 import java.util.Collection;
@@ -14,13 +14,14 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 
+import backend.api.users.UserRepository;
 import backend.domain.User;
 import backend.domain.properties.AttributesSet;
 import io.u2ware.common.oauth2.webmvc.AuthenticationContext;
 
 
 @Component
-public class UserService implements Converter<Jwt, Collection<GrantedAuthority>> {
+public class OAuth2Service implements Converter<Jwt, Collection<GrantedAuthority>> {
 
     protected Log logger = LogFactory.getLog(getClass());
 
@@ -49,7 +50,10 @@ public class UserService implements Converter<Jwt, Collection<GrantedAuthority>>
                 roles.addAll(u.getRoles());
      
             }, ()->{
-                if(userRepository.count() == 0l){
+
+                long count = userRepository.count();
+
+                if(count == 0l){
                     roles.add("ROLE_ADMIN");
                 }else if(roles.size() == 0 ) {
                     roles.add("ROLE_USER");
@@ -61,6 +65,15 @@ public class UserService implements Converter<Jwt, Collection<GrantedAuthority>>
                 SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(jwt));
                 //For User save Auditing...
                 userRepository.save(u);
+
+
+
+                userRepository.findAll().forEach(a->{
+                    logger.info("exists : "+a+" "+a.getRoles());
+
+                });
+                logger.info("insert : "+count+" "+roles);
+
             });
 
         }catch(Exception e){

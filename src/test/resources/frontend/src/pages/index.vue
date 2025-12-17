@@ -30,6 +30,9 @@
 const x = "[/]";
 import $accounts from "@/assets/apis/accounts";
 
+
+import $common from "@/assets/apis/common";
+
 export default {
   data: () => ({}),
 
@@ -57,6 +60,19 @@ export default {
 
   watch: {},
 
-  mounted() {},
+  mounted() {
+
+      // alert("111111");
+
+    $common.api.env("VITE_API_BACKEND", "VITE_API_TOKEN")
+    .then((r)=>{
+      // alert(r);
+      console.log(r);
+
+    })
+
+
+
+  },
 };
 </script>

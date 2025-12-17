@@ -18,8 +18,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.web.servlet.MockMvc;
 
-import backend.Oauth2Docs;
+import backend.api.oauth2.Oauth2Docs;
 import backend.domain.User;
+import backend.domain.properties.AttributesSet;
 import io.u2ware.common.data.jpa.repository.query.JpaSpecificationBuilder;
 
 
@@ -39,14 +40,18 @@ public class UserTest {
     @Test
     public void contextLoads() throws Exception{
 
-        List<Object> roles = Arrays.asList("ROLE_ADMIN");
         Specification<User> spec = JpaSpecificationBuilder.of(User.class)
             .where()
             .and()
-            .in("roles",  roles)
+            .like("roles",  "%ROLE_ADMIN%")
             .build();
         Optional<User> user = userRepository.findOne(spec);
-        String admin = user.map(u-> u.getUserId()).orElse("admin" );
+        String admin = user.map(u-> u.getUserId()).orElse("adminX" );
+
+        System.err.println("&&&&&&&&&&&&&&");
+        System.err.println(admin);
+        System.err.println("&&&&&&&&&&&&&&");
+
 
         Jwt u1 = od.jose(admin);
         Jwt u2 = od.jose("u2");

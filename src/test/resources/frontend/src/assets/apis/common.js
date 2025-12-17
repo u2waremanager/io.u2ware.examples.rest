@@ -1,6 +1,8 @@
 import qs from "qs";
 import $axios from "axios";
 
+import $commonStore from "@/assets/stores/common.js";
+
 const name = "[/assets/apis/common.js]";
 
 const $common = {
@@ -52,14 +54,30 @@ const $common = {
 
   api : {
 
-    host(uri) {
-      return $common.env.profile().then((profile) => {
-        return $common.env.value(uri, profile);
-      });
+    jwt(token){
+      let base64Payload = token.split('.')[1];
+      let base64 = base64Payload.replace(/-/g, '+').replace(/_/g, '/');
+      let decodedJWT = JSON.parse(
+            decodeURIComponent(
+              window
+                .atob(base64)
+                .split('')
+                .map(function (c) {
+                  return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                })
+                .join('')
+        )
+      );
+      return decodedJWT;
     },
 
-    auth(oauth2, target, type) {
 
+
+
+
+
+
+    auth(oauth2, target, type) {
       let token_type = "bearar";
       let id_token = oauth2;
 
@@ -90,6 +108,36 @@ const $common = {
       }
     },
 
+
+
+    // headers(headers, token) {
+    //   let oauth2 =
+    //     token == undefined ? $accountsState.computed.oauth2.get() : token;
+    //   return $common.api.auth(oauth2, headers, "headers");
+    // },
+    // params(params, token) {
+    //   let oauth2 =
+    //     token == undefined ? $accountsState.computed.oauth2.get() : token;
+    //   return $common.api.auth(oauth2, params, "params");
+    // },
+    // query(params, token) {
+    //   let oauth2 =
+    //     token == undefined ? $accountsState.computed.oauth2.get() : token;
+    //   return $common.api.auth(oauth2, params, "query");
+    // },
+
+
+
+
+
+
+
+
+
+
+
+
+    
     pageable(data) {
       if (!data) return {};
       const sort = [];
@@ -113,63 +161,53 @@ const $common = {
         return `${base}/${data}`;
       }
     },   
+
+
+    env() {
+
+      return $axios({
+        method : 'OPTIONS',
+        url: "/vite",
+      })
+      .then((r) => {
+        // console.log(1, arguments, r.data);
+        let result = {};
+        for(let i=0; i < arguments.length; i++) {
+
+          let p = `${arguments[i].toLowerCase()}`;
+          p = p.startsWith("vite_") ? p.substr(5) : p;
+          p = p.replaceAll('_', '.');
+
+          let value = r.data[p];
+
+          if(value == undefined) {
+            let k = `${arguments[i].toUpperCase()}`;
+            k = k.startsWith("VITE_") ? k : `VITE_${k}`;
+            value = import.meta.env[k];
+            // console.log(21, k, value);
+
+          }else{
+            // console.log(22, p, value);
+          }
+          result[arguments[i]] = value;
+        }
+        return result;
+      })
+      .catch((e) => {
+        // console.log(2, arguments, e);
+
+        let result = {};
+        for(let i=0; i < arguments.length; i++) {
+
+          let k = `${arguments[i].toUpperCase()}`;
+          k = k.startsWith("VITE_") ? k : `VITE_${k}`;
+          value = import.meta.env[k];
+          // console.log(21, k, value);
+        }
+        return result;
+      });
+    }
   },
-
-
-  ////////////////////////////////////
-  // env
-  ////////////////////////////////////
-  env: {
-    profile: () => {
-      if (import.meta.env.PROD) {
-        const url = "/actuator/info";
-        return $axios({
-            url: url,
-          })
-          .then((r) => {
-            // console.log("base.js", "profile()", url, "then", r);
-            if (r.headers["content-type"] == "application/json") {
-              let profile = r.data.profile;
-              if (profile != undefined) {
-                return `${profile}`;
-              }
-            }
-            return undefined;
-          })
-          .catch((e) => {
-            // console.log("base.js", "profile()", url, "catch", r);
-            return undefined;
-          });
-      } else {
-        return Promise.resolve(undefined);
-      }
-    },
-
-    key: (key, profile) => {
-      let suffix = profile != undefined ? `_${profile}`.toUpperCase() : "";
-      let prop = `${key.toUpperCase()}${suffix}`;
-      return prop.startsWith("VITE_") ? prop : `VITE_${prop}`;
-    },
-
-    value: (key, profile) => {
-      let envKey = $common.env.key(key, profile);
-      let v = import.meta.env[envKey];
-
-      // console.log("base.js", key, envKey, v);
-      // v = v.replaceAll("localhost",  window.location.hostname);
-      // console.log(window.location);
-      // protocol: "https:"
-      // hostname: "192.168.75.107"
-      // port: "3000"
-      // host: "192.168.75.107:3000"
-      // origin: "https://192.168.75.107:3000"
-      // pathname: "/contents/83151238-fda2-4feb-93bc-a11b94a38f1d/11"
-      // href: "https://192.168.75.107:3000/contents/83151238-fda2-4feb-93bc-a11b94a38f1d/11"
-      return v;
-    },
-  },
-
-
 
 }
 export default $common;

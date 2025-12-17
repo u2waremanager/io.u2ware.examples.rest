@@ -49,9 +49,10 @@
         # Table Cell Template Start
         //////////////////////////
         -->
+
         <template v-slot:item.userId="{ item }">
           <v-btn
-            :disabled="currentUser.userId == item.userId"
+            :disabled="jwt.claims.sub == item.userId"
             variant="plain"
             color="primary"
             :text="item.userId"
@@ -145,6 +146,8 @@
   </v-container>
 </template>
 
+
+
 <script>
 const x = "[/contents/users]";
 import $contentsApi from "@/assets/apis/contents.js";
@@ -206,7 +209,7 @@ export default {
 
   computed: {
     subtitle: $contentsStore.computed.subtitle,
-    currentUser: $contentsStore.computed.currentUser,
+    jwt: $contentsStore.computed.jwt,
   },
 
   methods: {
@@ -282,7 +285,7 @@ export default {
           return this.confirmError(e);
         })
         .catch((e) => {
-          this.$router.push("/");
+        //   this.$router.push("/");
         });
     },
 

@@ -1,4 +1,4 @@
-package backend;
+package backend.api.oauth2;
 
 
 import java.time.Instant;

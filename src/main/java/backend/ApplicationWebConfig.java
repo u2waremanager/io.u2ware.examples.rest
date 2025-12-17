@@ -2,13 +2,20 @@ package backend;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -17,6 +24,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
+@RestController
 @Configuration
 public class ApplicationWebConfig implements WebMvcConfigurer {
 
@@ -50,6 +58,7 @@ public class ApplicationWebConfig implements WebMvcConfigurer {
 
 
         logger.info("addResourceHandlers "+registry);
+        logger.info("viteProperties "+viteProperties);
 
         registry.addResourceHandler("/**")
                     .addResourceLocations("classpath:/META-INF/resources/")
@@ -90,5 +99,16 @@ public class ApplicationWebConfig implements WebMvcConfigurer {
                         }
                     });
     }
+ 
     
+    @Configuration
+    @ConfigurationProperties(prefix="vite")
+    public static class FrontendProperties extends HashMap<String,String>{}
+
+    private @Autowired FrontendProperties viteProperties;
+
+    @RequestMapping(method=RequestMethod.OPTIONS, value="/vite")
+    public Object vite(){
+        return viteProperties;
+    }
 }

@@ -95,3 +95,8 @@ docker push ghcr.io/u2waremanager/io.u2ware.examples.rest:0.0.1-SNAPSHOT
 
 
 
+-Dspring-boot.run.arguments="--vite.api.oauth2=AAAAAAAA"
+
+-Dspring-boot.run.arguments="--vite.api.oauth2=BBBBBB"
+
+

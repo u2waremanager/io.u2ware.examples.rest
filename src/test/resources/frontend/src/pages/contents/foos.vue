@@ -299,7 +299,7 @@ export default {
           return this.confirmError(e);
         })
         .catch((e) => {
-          this.$router.push("/");
+          // this.$router.push("/");
         });
     },
 

@@ -17,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.web.servlet.MockMvc;
 
-import backend.Oauth2Docs;
+import backend.api.oauth2.Oauth2Docs;
 
 
 @SpringBootTest

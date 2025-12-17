@@ -1,6 +1,6 @@
 import $common from "@/assets/apis/common.js";
 
-import $accountsStore from "@/assets/stores/accounts.js";
+import $commonStore from "@/assets/stores/common.js";
 
 
 const name = "[/assets/apis/accounts.js]";
@@ -10,7 +10,7 @@ const $accountsApi = {
   api: {
 
     host() {
-      return $common.api.host("VITE_API_OAUTH2");
+      return $common.api.env("VITE_API_OAUTH2");
     },
 
     execute(optionsBuilder) {
@@ -28,15 +28,15 @@ const $accountsApi = {
     },
 
     headers(headers, token){
-      let oauth2 = (token == undefined) ? $accountsStore.computed.oauth2.get() : token;
+      let oauth2 = (token == undefined) ? $commonStore.computed.oauth2.get() : token;
       return $common.api.auth(oauth2, headers, "headers");
     },
     params(params, token){
-      let oauth2 = (token == undefined) ? $accountsStore.computed.oauth2.get() : token;
+      let oauth2 = (token == undefined) ? $commonStore.computed.oauth2.get() : token;
       return $common.api.auth(oauth2, params, "params");
     },
     query(params, token){
-      let oauth2 = (token == undefined) ? $accountsStore.computed.oauth2.get() : token;
+      let oauth2 = (token == undefined) ? $commonStore.computed.oauth2.get() : token;
       return $common.api.auth(oauth2, params, "query");
     },
 

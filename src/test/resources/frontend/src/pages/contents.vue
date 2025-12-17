@@ -36,7 +36,6 @@
         <v-list-item to="/contents/bars"> Bars </v-list-item>
         <v-list-item to="/contents/items"> Items </v-list-item>
         <v-list-item v-if="isAdmin" to="/contents/users"> Users </v-list-item>
-        <v-list-item v-if="isAdmin" to="/contents/tokens"> Tokens </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -86,6 +85,16 @@ export default {
   },
 
   mounted() {
+
+
+    // $contentsApi.auditors.userinfo()
+
+    //   .then((r) => {
+
+    //     console.log(r);
+    //   });
+
+
     $contentsApi.auditors
       .hasPermission(["ROLE_ADMIN"])
       .then((r) => {

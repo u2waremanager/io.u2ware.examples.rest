@@ -52,12 +52,12 @@ export default {
       },      
     },
 
-    currentUser : {
+    jwt : {
       get: () => {
-        return $store.getters["contents/root"].currentUser;
+        return $store.getters["contents/root"].jwt;
       },
       set: (val) => {
-        $store.commit("contents/root", { currentUser: val });
+        $store.commit("contents/root", { jwt: val });
       },      
     }
   }
