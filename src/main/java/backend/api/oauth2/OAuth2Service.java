@@ -25,8 +25,7 @@ public class OAuth2Service implements Converter<Jwt, Collection<GrantedAuthority
 
     protected Log logger = LogFactory.getLog(getClass());
 
-    @Autowired
-    private UserRepository userRepository;
+    protected @Autowired UserRepository userRepository;
 
 
     @Override

@@ -1,7 +1,6 @@
 import $common from "@/assets/apis/common.js";
 
-import $commonState from "@/assets/stores/common.js";
-import $contentsState from "@/assets/stores/contents.js";
+import $contentsStore from "@/assets/stores/contents.js";
 
 const name = "[/assets/apis/contents.js]";
 
@@ -29,11 +28,16 @@ const $contentsApi = {
         return `${env["VITE_API_BACKEND"]}${data}`;
       }
     },
-    headers(env, headers) {
-      let t = env["VITE_API_TOKEN"];
-      let token = t == undefined ? $commonState.computed.oauth2.get() : t;
-      let authorization = `Bearer ${token}`;
 
+    headers(env, headers) {
+      // let t = env["VITE_API_TOKEN"];
+      // let token = t == undefined ? $commonStore.computed.oauth2.get() : t;
+      let token = env["VITE_API_TOKEN"];
+
+      if(token == undefined) {
+        return (headers == undefined) ? {} : headers;
+      }
+      let authorization = `Bearer ${token}`;
       if (headers == undefined) {
         return { Authorization: authorization };
       } else {
@@ -146,9 +150,9 @@ const $contentsApi = {
   items: {
     search(data, params) {
       return $contentsApi.api
-        .execute((uri) => ({
+        .execute((e) => ({
           method: "POST",
-          url: $contentsApi.api.url(e, '/api/items/search'),
+          url: $contentsApi.api.url(e, "/api/items/search"),
           headers: $contentsApi.api.headers(e, {}),
           params: $contentsApi.api.pageable(params),
           data: data,
@@ -162,7 +166,7 @@ const $contentsApi = {
     create(data) {
       return $contentsApi.api.execute((e) => ({
         method: "POST",
-        url: $contentsApi.api.url(e, '/api/items'),
+        url: $contentsApi.api.url(e, "/api/items"),
         headers: $contentsApi.api.headers(e, {}),
         data: data,
       }));
@@ -190,8 +194,6 @@ const $contentsApi = {
       }));
     },
   },
-
-
 
   users: {
     search(data, params) {
@@ -241,41 +243,23 @@ const $contentsApi = {
     },
   },
 
-
-  auditors : {
-
-    userinfo() {
-
-      let jwt = $contentsState.computed.jwt.get();
-      if (jwt) {
-        // console.log(1, currentUser);
-        return $contentsApi.api.execute((e) => ({
+  oauth2: {
+    info() {
+      return $contentsApi.api.execute((e) => {
+        let options = {
           method: "GET",
-          url: $contentsApi.api.url(e, '/api/users/'+jwt.claims.sub),
+          url: $contentsApi.api.url(e, "/api/oauth2/userinfo"),
           headers: $contentsApi.api.headers(e, {}),
-        }));
-
-      }else{
-        return $contentsApi.api.execute((e) => ({
-          method: "GET",
-          url: $contentsApi.api.url(e, '/oauth2/userinfo'),
-          headers: $contentsApi.api.headers(e, {}),
-        }))
-        .then(r=>{
-          // console.log(2, r);
-          $contentsState.computed.jwt.set(r);
-
-          return $contentsApi.api.execute((e) => ({
-            method: "POST",
-            url: $contentsApi.api.url(e, '/api/users/'+r.claims.sub),
-            headers: $contentsApi.api.headers(e, {}),
-          }));
-        })
-      };
+        };
+        return options;
+      }).then(r => {
+        $contentsStore.computed.currentUser.set(r);
+        return r;
+      });
     },
 
-    hasPermission(roles) {
-      return $contentsApi.auditors.userinfo().then((user) => {
+    permission(roles) {
+      return $contentsApi.oauth2.info().then((user) => {
         let hasRole = false;
         for (let role of roles) {
           if (user.roles.includes(role)) {
@@ -290,8 +274,8 @@ const $contentsApi = {
       });
     },
 
-    hasNotPermission(roles) {
-      return $contentsApi.auditors.userinfo().then((user) => {
+    permissionNot(roles) {
+      return $contentsApi.oauth2.info().then((user) => {
         let hasRole = false;
         for (let role of roles) {
           if (user.roles.includes(role)) {
@@ -305,13 +289,7 @@ const $contentsApi = {
         throw user;
       });
     },
-
   },
-
-
-
-
-
-  
 };
+
 export default $contentsApi;

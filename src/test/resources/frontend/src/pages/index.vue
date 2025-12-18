@@ -28,10 +28,7 @@
 
 <script>
 const x = "[/]";
-import $accounts from "@/assets/apis/accounts";
-
-
-import $common from "@/assets/apis/common";
+import $contentsApi from "@/assets/apis/contents";
 
 export default {
   data: () => ({}),
@@ -45,7 +42,7 @@ export default {
       Promise.resolve()
         .then((r) => {
           console.log(x, "start()", 1);
-          return $accounts.oauth2.userinfo();
+          return $contentsApi.oauth2.info();
         })
         .then((r) => {
           console.log(x, "start()", 2, r);
@@ -53,7 +50,7 @@ export default {
         })
         .catch((r) => {
           console.log(x, "start()", 3, r);
-          this.$router.push(`/accounts`);
+          // this.$router.push(`/accounts`);
         });
     },
   },
@@ -61,16 +58,6 @@ export default {
   watch: {},
 
   mounted() {
-
-      // alert("111111");
-
-    $common.api.env("VITE_API_BACKEND", "VITE_API_TOKEN")
-    .then((r)=>{
-      // alert(r);
-      console.log(r);
-
-    })
-
 
 
   },

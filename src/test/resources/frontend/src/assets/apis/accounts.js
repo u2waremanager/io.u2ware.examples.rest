@@ -1,7 +1,6 @@
 import $common from "@/assets/apis/common.js";
 
-import $commonStore from "@/assets/stores/common.js";
-
+import $caccountsStore from "@/assets/stores/accounts.js";
 
 const name = "[/assets/apis/accounts.js]";
 
@@ -27,18 +26,18 @@ const $accountsApi = {
         });
     },
 
-    headers(headers, token){
-      let oauth2 = (token == undefined) ? $commonStore.computed.oauth2.get() : token;
-      return $common.api.auth(oauth2, headers, "headers");
-    },
-    params(params, token){
-      let oauth2 = (token == undefined) ? $commonStore.computed.oauth2.get() : token;
-      return $common.api.auth(oauth2, params, "params");
-    },
-    query(params, token){
-      let oauth2 = (token == undefined) ? $commonStore.computed.oauth2.get() : token;
-      return $common.api.auth(oauth2, params, "query");
-    },
+    // headers(headers, token){
+    //   let oauth2 = (token == undefined) ? $commonStore.computed.oauth2.get() : token;
+    //   return $common.api.auth(oauth2, headers, "headers");
+    // },
+    // params(params, token){
+    //   let oauth2 = (token == undefined) ? $commonStore.computed.oauth2.get() : token;
+    //   return $common.api.auth(oauth2, params, "params");
+    // },
+    // query(params, token){
+    //   let oauth2 = (token == undefined) ? $commonStore.computed.oauth2.get() : token;
+    //   return $common.api.auth(oauth2, params, "query");
+    // },
 
     pageable(data) {
       return $common.api.pageable(data);

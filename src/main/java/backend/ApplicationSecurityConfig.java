@@ -1,7 +1,5 @@
 package backend;
 
-import java.nio.file.Path;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Collection;
 
 import org.apache.commons.logging.Log;
@@ -11,7 +9,6 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2Res
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -21,19 +18,14 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtException;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
 import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import com.nimbusds.jose.jwk.RSAKey;
-
-import io.u2ware.common.oauth2.crypto.CryptoKeyFiles;
+import io.u2ware.common.oauth2.jwt.JwtAuthenticationConverterBuilder;
+import io.u2ware.common.oauth2.jwt.JwtDecoderBuilder;
 
 
 @Configuration
@@ -46,7 +38,6 @@ public class ApplicationSecurityConfig {
 
     @Autowired
     private CorsConfigurationSource corsConfigurationSource;
-
 
 
     @Bean
@@ -83,66 +74,20 @@ public class ApplicationSecurityConfig {
         return r;
     }
 
-
-
     @Autowired(required = false)
-    private Converter<Jwt, Collection<GrantedAuthority>> customJwtGrantedAuthoritiesConverter;
+    private Converter<Jwt, Collection<GrantedAuthority>> jwtGrantedAuthoritiesConverter;
 
-    
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
-
-        Converter<Jwt, Collection<GrantedAuthority>> jwtGrantedAuthoritiesConverter = null;
-        if(customJwtGrantedAuthoritiesConverter == null) {
-            JwtGrantedAuthoritiesConverter c = new JwtGrantedAuthoritiesConverter();
-            c.setAuthoritiesClaimName("authorities");
-            c.setAuthorityPrefix("");
-            jwtGrantedAuthoritiesConverter = c;
-        }else{
-            jwtGrantedAuthoritiesConverter = customJwtGrantedAuthoritiesConverter;
-        }
-
-        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
-        return jwtAuthenticationConverter;
+        return JwtAuthenticationConverterBuilder.getInstance().build(jwtGrantedAuthoritiesConverter);
     }
 
 	@Autowired
 	private OAuth2ResourceServerProperties oauth2ResourceServerProperties;
 
 
-    @Autowired(required = false)    
-	private RSAKey joseRSAKey;
-
-
     @Bean
     public JwtDecoder jwtDecoder() throws Exception {
-
-        if(! ObjectUtils.isEmpty(joseRSAKey)) {
-            logger.info("NimbusJwtDecoder by joseRSAKey");
-            return NimbusJwtDecoder.withPublicKey(joseRSAKey.toRSAPublicKey()).build(); 
-        }
-
-        Resource publicKeyLocation = oauth2ResourceServerProperties.getJwt().getPublicKeyLocation();
-        String jwkSetUri = oauth2ResourceServerProperties.getJwt().getJwkSetUri();
-
-        if(! ObjectUtils.isEmpty(publicKeyLocation)) {
-            logger.info("NimbusJwtDecoder by publicKeyLocation");
-            Path path = Path.of(publicKeyLocation.getURI());
-            RSAPublicKey publicKey = CryptoKeyFiles.readRSAPublicKey(path);
-            return NimbusJwtDecoder.withPublicKey(publicKey).build();
-        }
-
-        if(! ObjectUtils.isEmpty(jwkSetUri)) {
-            logger.info("NimbusJwtDecoder by jwkSetUri");
-            return NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
-        }
-
-        logger.info("NimbusJwtDecoder by Unimplemented");
-        return new JwtDecoder(){
-            public Jwt decode(String token) throws JwtException {
-                throw new UnsupportedOperationException("Unimplemented method 'decode'");
-            }
-        };
+        return JwtDecoderBuilder.getInstance().build(oauth2ResourceServerProperties);
     }
 }

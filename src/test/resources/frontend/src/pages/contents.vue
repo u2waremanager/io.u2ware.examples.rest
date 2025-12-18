@@ -61,6 +61,7 @@ export default {
 
   computed: {
     subtitle: $contentsState.computed.subtitle,
+    currentUser : $contentsState.computed.currentUser,
   },
 
   methods: {
@@ -86,17 +87,8 @@ export default {
 
   mounted() {
 
-
-    // $contentsApi.auditors.userinfo()
-
-    //   .then((r) => {
-
-    //     console.log(r);
-    //   });
-
-
-    $contentsApi.auditors
-      .hasPermission(["ROLE_ADMIN"])
+    $contentsApi.oauth2
+      .permission(["ROLE_ADMIN"])
       .then((r) => {
         console.log(x, "mounted()", 1, r);
         this.username = r.userId;

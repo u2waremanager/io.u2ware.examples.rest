@@ -1,8 +1,6 @@
 import qs from "qs";
 import $axios from "axios";
 
-import $commonStore from "@/assets/stores/common.js";
-
 const name = "[/assets/apis/common.js]";
 
 const $common = {
@@ -70,10 +68,6 @@ const $common = {
       );
       return decodedJWT;
     },
-
-
-
-
 
 
 

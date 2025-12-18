@@ -49,10 +49,9 @@
         # Table Cell Template Start
         //////////////////////////
         -->
-
         <template v-slot:item.userId="{ item }">
           <v-btn
-            :disabled="jwt.claims.sub == item.userId"
+            :disabled="currentUser.userId == item.userId"
             variant="plain"
             color="primary"
             :text="item.userId"
@@ -209,7 +208,7 @@ export default {
 
   computed: {
     subtitle: $contentsStore.computed.subtitle,
-    jwt: $contentsStore.computed.jwt,
+    currentUser : $contentsStore.computed.currentUser,
   },
 
   methods: {
@@ -285,7 +284,7 @@ export default {
           return this.confirmError(e);
         })
         .catch((e) => {
-        //   this.$router.push("/");
+          this.$router.push("/");
         });
     },
 
