@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import backend.api.users.UserRepository;
 import backend.domain.User;
-import io.u2ware.common.oauth2.webmvc.AuthenticationContext;
+import io.u2ware.common.oauth2.jwt.AuthenticationContext;
 
 
 @BasePathAwareController
@@ -30,14 +30,19 @@ public class OAuth2Endpoints {
     @GetMapping(value = "/oauth2/userinfo")
     public @ResponseBody ResponseEntity<Object> oauth2UserInfo(Authentication authentication) {
 
-        Jwt jwt = AuthenticationContext.authenticationToken(authentication);
-        String id = jwt.getSubject();
-        Optional<User> user = userRepository.findById(id);
-        
-        if(user.isPresent())  {
-            return ResponseEntity.ok(user.get());
-        }else{
+        try{
+            Jwt jwt = AuthenticationContext.authenticationToken(authentication);
+            String id = jwt.getSubject();
+            Optional<User> user = userRepository.findById(id);
+            
+            if(user.isPresent())  {
+                return ResponseEntity.ok(user.get());
+            }else{
+                return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
+            }
+
+        }catch(Exception e){
             return ResponseEntity.status(HttpStatusCode.valueOf(401)).build();
-        }          
+        }        
    }
 }

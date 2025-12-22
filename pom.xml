@@ -96,6 +96,12 @@
 			<version>${u2ware.version}</version>
 		</dependency> 
 
+		<dependency>
+			<groupId>io.u2ware</groupId>
+			<artifactId>common.stomp</artifactId>
+			<version>${u2ware.version}</version>
+		</dependency> 
+
 <!-- 
 -->
 

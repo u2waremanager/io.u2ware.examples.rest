@@ -44,16 +44,6 @@ class ApplicationTests {
 						MockMvcResultHandlers.print(System.err)
 				);
 
-
-
-		// String[] names = ac.getBeanDefinitionNames();
-
-		// Stream.of(names).sorted().forEach(name->{
-		// 	logger.info(name+" => "+ac.getBean(name).getClass().getName());
-		// });
-
-
-		RsaKeyConversionServicePostProcessor f;
 	}
 
 }

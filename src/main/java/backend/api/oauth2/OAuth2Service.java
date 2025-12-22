@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import backend.api.users.UserRepository;
 import backend.domain.User;
 import backend.domain.properties.AttributesSet;
-import io.u2ware.common.oauth2.webmvc.AuthenticationContext;
+import io.u2ware.common.oauth2.jwt.AuthenticationContext;
 
 
 @Component
