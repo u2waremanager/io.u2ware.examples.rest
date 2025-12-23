@@ -1,10 +1,10 @@
 package backend.api.users;
 
 
-import static io.u2ware.common.docs.MockMvcRestDocs.*;
+import static io.u2ware.common.docs.MockMvcRestDocs.is2xx;
+import static io.u2ware.common.docs.MockMvcRestDocs.is4xx;
+import static io.u2ware.common.docs.MockMvcRestDocs.post;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.logging.Log;
@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import backend.api.oauth2.Oauth2Docs;
 import backend.domain.User;
-import backend.domain.properties.AttributesSet;
 import io.u2ware.common.data.jpa.repository.query.JpaSpecificationBuilder;
 
 
